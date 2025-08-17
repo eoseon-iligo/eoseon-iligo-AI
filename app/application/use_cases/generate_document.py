@@ -2,6 +2,7 @@
 from app.application.dto import GenerateCommand, GenerateResult
 from app.application.ports import DocumentRendererPort
 
+
 class GenerateDocumentUseCase:
     def __init__(self, renderer: DocumentRendererPort):
         self._renderer = renderer

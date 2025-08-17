@@ -31,6 +31,8 @@ pre-commit = "^4.2.0"
 httpx = "^0.28.1"
 pytest = "^8.4.1"
 cowpy = "^1.1.5"
+black = "^25.1.0"
+isort = "^6.0.1"
 
 [tool.poetry.scripts]
 battleship = "app.interfaces.http.main:run"
