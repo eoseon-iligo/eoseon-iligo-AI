@@ -1,12 +1,14 @@
 # HWPX 파일 생성
 
+import io
+import zipfile
 from pathlib import Path
-from app.application.ports import DocumentRendererPort
+
 from app.application.dto import GenerateCommand, GenerateResult
+from app.application.ports import DocumentRendererPort
 from app.infrastructure.config import settings
 from app.infrastructure.utils.zip_utils import replace_in_zip_bytes
-import zipfile 
-import io
+
 
 class HwpxRenderer(DocumentRendererPort):
     """
@@ -15,6 +17,7 @@ class HwpxRenderer(DocumentRendererPort):
     - 내부 XML(예: Contents/section0.xml)에 {{TITLE}}, {{BODY}} 플레이스홀더가 있음
     - 복잡한 표/이미지는 템플릿과 XML 조작 로직 확장 필요
     """
+
     TEMPLATE_FILE = settings.templates_dir / "inch.hwp"
 
     def render(self, cmd: GenerateCommand) -> GenerateResult:
@@ -28,13 +31,15 @@ class HwpxRenderer(DocumentRendererPort):
             raise ValueError(
                 f"HWPX 템플릿이 유효한 Zip이 아닙니다: {self.TEMPLATE_FILE}. "
                 "한글에서 'HWPX 형식'으로 다시 저장해 주세요."
-        )
+            )
 
         ast = cmd.ast
-        body_text = "\n\n".join([
-            ((s.heading or "") + ("\n" + (s.body or "") if s.body else "")).strip()
-            for s in ast.sections
-        ]).strip()
+        body_text = "\n\n".join(
+            [
+                ((s.heading or "") + ("\n" + (s.body or "") if s.body else "")).strip()
+                for s in ast.sections
+            ]
+        ).strip()
 
         replacements = {
             "Contents/section0.xml": [
