@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "battleship"
+version = "0.1.0"
+description = "KDT challenge"
+authors = ["wallace <j76067469@gmail.com>"] 
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"  
+pendulum = ">=3.1.0,<4.0.0"
+jupyter = ">=1.1.1,<2.0.0"
+notebook = ">=7.4.4,<8.0.0"
+sqlalchemy = ">=2.0.41,<3.0.0"
+python-dotenv = ">=1.1.1,<2.0.0"
+numpy = "^1.26"
+pandas = "^2.2"
+matplotlib = "^3.8"
+docxtpl = "^0.20.1"
+pydantic = "^2.11.7"
+uvicorn = {extras = ["standard"], version = "^0.35.0"}
+orjson = "^3.10.6"
+python-docx = "^1.1.2"
+fastapi = "^0.116.1"
+pydantic-settings = "^2.10.1"
+lxml = "^6.0.0"
+python-multipart = "^0.0.20"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.12.5"
+pre-commit = "^4.2.0"
+httpx = "^0.28.1"
+pytest = "^8.4.1"
+cowpy = "^1.1.5"
+
+[tool.poetry.scripts]
+battleship = "app.interfaces.http.main:run"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+exclude = [
+    ".git",
+    "__pycache__",
+    "tests/*"
+]
+lint.ignore = ["F401", "E402", "E501"]
+lint.select = ["I", "E", "F", "W", "C90"]
