@@ -1,14 +1,17 @@
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
-import io, time, uuid
+import io
+import time
+import uuid
 from pathlib import Path
 
-from app.interfaces.http.schemas import GenerateRequest, GenerateResponse
-from app.application.use_cases.generate_document import GenerateDocumentUseCase
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
+
 from app.application.dto import GenerateCommand
+from app.application.use_cases.generate_document import GenerateDocumentUseCase
+from app.infrastructure.config import settings
 from app.infrastructure.renderers.docx_renderer import DocxRenderer
 from app.infrastructure.renderers.hwpx_renderer import HwpxRenderer
-from app.infrastructure.config import settings
+from app.interfaces.http.schemas import GenerateRequest, GenerateResponse
 
 app = FastAPI(title="BattleShip API (Clean Architecture)")
 
@@ -17,11 +20,13 @@ _RENDERERS = {
     "hwpx": HwpxRenderer(),
 }
 
-from cowpy import cow 
+from cowpy import cow
+
 
 @app.get("/")
 def greeting():
     return cow.Moose().milk("Hello BattleShip")
+
 
 @app.post("/generate", response_model=GenerateResponse)
 async def generate(req: GenerateRequest):
@@ -43,16 +48,15 @@ async def generate(req: GenerateRequest):
         f.write(result.data)
 
     return GenerateResponse(
-        filename=result.filename,               
+        filename=result.filename,
         content_type=result.content_type,
-        server_path=str(server_path.resolve()), 
+        server_path=str(server_path.resolve()),
     )
 
-from pathlib import Path
-import time
 
 OUTPUT_DIR = Path.cwd() / "output"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
 
 @app.post("/download")
 async def download(req: GenerateRequest):
@@ -73,11 +77,13 @@ async def download(req: GenerateRequest):
         media_type=result.content_type,
         headers={
             "Content-Disposition": f"attachment; filename={result.filename}",
-            "X-Server-Path": str(server_path),  
+            "X-Server-Path": str(server_path),
         },
     )
+
 
 def run():
     """Entry point for `poetry run docgen-api`"""
     import uvicorn
+
     uvicorn.run("app.interfaces.http.main:app", host="0.0.0.0", port=8002, reload=True)

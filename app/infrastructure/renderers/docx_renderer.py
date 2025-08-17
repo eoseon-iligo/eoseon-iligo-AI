@@ -1,10 +1,13 @@
 # pyhton-docx로 DOCX 생성
-from docx import Document
-from docx.shared import Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from app.application.ports import DocumentRendererPort
-from app.application.dto import GenerateCommand, GenerateResult
 import io
+
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt
+
+from app.application.dto import GenerateCommand, GenerateResult
+from app.application.ports import DocumentRendererPort
+
 
 class DocxRenderer(DocumentRendererPort):
     def render(self, cmd: GenerateCommand) -> GenerateResult:
@@ -25,8 +28,9 @@ class DocxRenderer(DocumentRendererPort):
                 rh.bold = True
                 rh.font.size = Pt(12)
             if s.body:
-                pb = doc.add_paragraph(s.body)
-                for t in (s.tables or []):
+                # pb = doc.add_paragraph(s.body)
+                doc.add_paragraph(s.body)
+                for t in s.tables or []:
                     table = doc.add_table(rows=1, cols=len(t.headers))
                     hdr = table.rows[0].cells
                     for j, h in enumerate(t.headers):
